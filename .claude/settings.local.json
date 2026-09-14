@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -o \"const [A-Za-z_]* = {[^;]\\\\{0,80\\\\}base64\" xr-resource-finder.html)",
+      "Bash(start \"\" \"xr-resource-finder.html\")",
+      "Bash(start \"\" \"c:\\\\Users\\\\80012232\\\\Desktop\\\\Projects\\\\XR Resource Finder\\\\xr-resource-finder.html\")",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
