@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -384,10 +384,12 @@ function cardHTML(i, idx){
   const k = KIND[i.kind] || KIND.mine;
   const pinned = state.pins.includes(i.id);
   const img = IMG[i.img] || i.imgData;
+  const mine = state.mine.some(m => m.id === i.id);
   return `<div class="card${idx===state.sel?' sel':''}" style="--dot:${k.colour}" data-id="${i.id}" tabindex="0" role="button">
     ${img ? `<img class="thumb" src="${img}" alt="" loading="lazy">`
           : `<div class="noimg">${k.label}</div>`}
     <button class="pin" data-pin="${i.id}" aria-pressed="${pinned}" title="${pinned?'Unpin':'Pin'}">${pinned?'★':'☆'}</button>
+    ${mine ? `<button class="pin" style="right:40px" data-rmmine="${i.id}" title="Remove this entry">×</button>` : ''}
     <div class="cbody">
       <div class="ctitle">${esc(i.name)}</div>
       <div class="cquick">${esc(i.quick)}</div>
@@ -638,6 +640,12 @@ document.addEventListener('click', e => {
   const hit = s => t.closest(`[${s}]`);
   let n;
   if ((n = hit('data-pin')))  { e.stopPropagation(); return togglePin(n.dataset.pin); }
+  if ((n = hit('data-rmmine'))){ e.stopPropagation();
+    state.mine = state.mine.filter(m => m.id !== n.dataset.rmmine);
+    ITEMS = DATA.items.concat(state.mine);
+    state.pins = state.pins.filter(id => id !== n.dataset.rmmine);
+    state.run  = state.run.filter(id => id !== n.dataset.rmmine);
+    save(); render(); return toast('Entry removed'); }
   if ((n = hit('data-tab')))  { state.tab = n.dataset.tab; state.topics.clear(); state.sel = -1; return render(); }
   if ((n = hit('data-topic'))){ const k = n.dataset.topic;
                                 state.topics.has(k) ? state.topics.delete(k) : state.topics.add(k);
@@ -720,7 +728,7 @@ document.addEventListener('submit', async e => {
     topics: g('tags').split(',').map(s => s.trim()).filter(Boolean).slice(0,3),
     system: '', by: 'You', time: '', active: '', path: g('path'),
     obj: g('obj').split('\n').map(s => s.replace(/^[-•*]\s*/,'').trim()).filter(Boolean),
-    page: 0, img: ''
+    page: 0, img: '', facilitatorNotes: []
   };
   if (!item.topics.length) item.topics = ['Other'];
   const imageFile = f.get('image');
