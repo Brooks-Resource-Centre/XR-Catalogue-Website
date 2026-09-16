@@ -64,16 +64,16 @@ button{cursor:pointer;background:none;border:none}
 /* ---------- channels ---------- */
 .chan{max-width:1320px;margin:0 auto;padding:12px 20px 0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 .chan::-webkit-scrollbar{display:none}
-.ch{padding:9px 14px 11px;border-bottom:2.5px solid transparent;color:var(--mut);font-size:14px;
+.ch{padding:9px 14px 11px;border-bottom:2.5px solid transparent;color:var(--mut);font-size:20px;
   white-space:nowrap;display:flex;gap:7px;align-items:center;font-weight:500}
 .ch:hover{color:var(--fg)}
 .ch[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--dot,var(--fg))}
-.ch .n{font-size:11.5px;background:var(--surf2);border-radius:20px;padding:1px 7px;color:var(--mut)}
+.ch .n{font-size:12.5px;background:var(--surf2);border-radius:20px;padding:1px 7px;color:var(--mut)}
 .ch[aria-selected="true"] .n{background:var(--dot,var(--fg));color:var(--bg)}
 
 /* ---------- topic chips ---------- */
 .topics{max-width:1320px;margin:0 auto;padding:12px 20px 14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.chip{border:1px solid var(--line);background:var(--surf);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--mut)}
+.chip{border:1px solid var(--line);background:var(--surf);border-radius:20px;padding:5px 12px;font-size:20px;color:var(--mut)}
 .chip:hover{color:var(--fg);border-color:var(--mut)}
 .chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:500}
 .chip.reset{border-style:dashed;color:var(--amber);border-color:var(--amber)}
@@ -539,6 +539,7 @@ function drawMine(){
     <label>Topics, separated by commas<input name="tags" placeholder="Clinical assessment, Communication"></label>
     <label>Full description<textarea name="desc"></textarea></label>
     <label>Learning objectives, one per line<textarea name="obj"></textarea></label>
+    <label>How to launch / facilitator notes, one per line<textarea name="facilitatorNotes" placeholder="e.g. Log into the CAVE PC with the shared account&#10;Load the scene from the Desktop shortcut before the group arrives"></textarea></label>
     <div style="display:flex;gap:8px"><button class="btn primary" type="submit">Save entry</button></div>
     <p class="hint">Saved in this browser only. Use <em>Export as JSON</em> to hand your additions to whoever maintains the catalogue, or <em>Import JSON</em> to bring in entries someone else exported.</p>
   </form>
@@ -740,7 +741,8 @@ document.addEventListener('submit', async e => {
     topics: g('tags').split(',').map(s => s.trim()).filter(Boolean).slice(0,3),
     system: '', by: 'You', time: '', active: '', path: g('path'),
     obj: g('obj').split('\n').map(s => s.replace(/^[-•*]\s*/,'').trim()).filter(Boolean),
-    page: 0, img: '', facilitatorNotes: []
+    page: 0, img: '',
+    facilitatorNotes: g('facilitatorNotes').split('\n').map(s => s.replace(/^[-•*]\s*/,'').trim()).filter(Boolean)
   };
   if (!item.topics.length) item.topics = ['Other'];
   const imageFile = f.get('image');
